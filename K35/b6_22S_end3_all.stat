@@ -1,0 +1,241 @@
+# 22S 
+#Deletion=-46, Subtotal=2, Deleted nt=C
+-46	2	C	-46C/2	-46/2
+-46	0	2	1.000000
+
+
+#Deletion=-45, Subtotal=0, Deleted nt=A
+-45	0	A	-45A/0	-45/0
+
+
+#Deletion=-44, Subtotal=0, Deleted nt=A
+-44	0	A	-44A/0	-44/0
+
+
+#Deletion=-43, Subtotal=0, Deleted nt=C
+-43	0	C	-43C/0	-43/0
+
+
+#Deletion=-42, Subtotal=0, Deleted nt=T
+-42	0	T	-42T/0	-42/0
+
+
+#Deletion=-41, Subtotal=0, Deleted nt=T
+-41	0	T	-41T/0	-41/0
+
+
+#Deletion=-40, Subtotal=0, Deleted nt=T
+-40	0	T	-40T/0	-40/0
+
+
+#Deletion=-39, Subtotal=0, Deleted nt=T
+-39	0	T	-39T/0	-39/0
+
+
+#Deletion=-38, Subtotal=0, Deleted nt=T
+-38	0	T	-38T/0	-38/0
+
+
+#Deletion=-37, Subtotal=0, Deleted nt=C
+-37	0	C	-37C/0	-37/0
+
+
+#Deletion=-36, Subtotal=0, Deleted nt=T
+-36	0	T	-36T/0	-36/0
+
+
+#Deletion=-35, Subtotal=1, Deleted nt=T
+-35	1	T	-35T/1	-35/1
+-35	4	1	1.000000
+
+
+#Deletion=-34, Subtotal=0, Deleted nt=T
+-34	0	T	-34T/0	-34/0
+
+
+#Deletion=-33, Subtotal=0, Deleted nt=G
+-33	0	G	-33G/0	-33/0
+
+
+#Deletion=-32, Subtotal=0, Deleted nt=G
+-32	0	G	-32G/0	-32/0
+
+
+#Deletion=-31, Subtotal=0, Deleted nt=G
+-31	0	G	-31G/0	-31/0
+
+
+#Deletion=-30, Subtotal=0, Deleted nt=C
+-30	0	C	-30C/0	-30/0
+
+
+#Deletion=-29, Subtotal=0, Deleted nt=A
+-29	0	A	-29A/0	-29/0
+
+
+#Deletion=-28, Subtotal=0, Deleted nt=T
+-28	0	T	-28T/0	-28/0
+
+
+#Deletion=-27, Subtotal=0, Deleted nt=T
+-27	0	T	-27T/0	-27/0
+
+
+#Deletion=-26, Subtotal=0, Deleted nt=C
+-26	0	C	-26C/0	-26/0
+
+
+#Deletion=-25, Subtotal=0, Deleted nt=G
+-25	0	G	-25G/0	-25/0
+
+
+#Deletion=-24, Subtotal=0, Deleted nt=A
+-24	0	A	-24A/0	-24/0
+
+
+#Deletion=-23, Subtotal=0, Deleted nt=G
+-23	0	G	-23G/0	-23/0
+
+
+#Deletion=-22, Subtotal=0, Deleted nt=C
+-22	0	C	-22C/0	-22/0
+
+
+#Deletion=-21, Subtotal=0, Deleted nt=A
+-21	0	A	-21A/0	-21/0
+
+
+#Deletion=-20, Subtotal=0, Deleted nt=A
+-20	0	A	-20A/0	-20/0
+
+
+#Deletion=-19, Subtotal=0, Deleted nt=T
+-19	0	T	-19T/0	-19/0
+
+
+#Deletion=-18, Subtotal=0, Deleted nt=C
+-18	0	C	-18C/0	-18/0
+
+
+#Deletion=-17, Subtotal=0, Deleted nt=G
+-17	0	G	-17G/0	-17/0
+
+
+#Deletion=-16, Subtotal=0, Deleted nt=G
+-16	0	G	-16G/0	-16/0
+
+
+#Deletion=-15, Subtotal=0, Deleted nt=G
+-15	0	G	-15G/0	-15/0
+
+
+#Deletion=-14, Subtotal=0, Deleted nt=G
+-14	0	G	-14G/0	-14/0
+
+
+#Deletion=-13, Subtotal=0, Deleted nt=C
+-13	0	C	-13C/0	-13/0
+
+
+#Deletion=-12, Subtotal=0, Deleted nt=C
+-12	0	C	-12C/0	-12/0
+
+
+#Deletion=-11, Subtotal=0, Deleted nt=C
+-11	0	C	-11C/0	-11/0
+
+
+#Deletion=-10, Subtotal=0, Deleted nt=A
+-10	0	A	-10A/0	-10/0
+
+
+#Deletion=-9, Subtotal=0, Deleted nt=G
+-9	0	G	-9G/0	-9/0
+
+
+#Deletion=-8, Subtotal=1, Deleted nt=A
+-8	1	A	-8A/1	-8/1
+-8	1	1	1.000000
+
+
+#Deletion=-7, Subtotal=0, Deleted nt=G
+-7	0	G	-7G/0	-7/0
+
+
+#Deletion=-6, Subtotal=0, Deleted nt=G
+-6	0	G	-6G/0	-6/0
+
+
+#Deletion=-5, Subtotal=7, Deleted nt=T
+-5	7	T	-5T/7	-5/7
+-5	0	3	0.428571
+-5	3	1	0.142857
+-5	5	3	0.428571
+
+
+#Deletion=-4, Subtotal=6, Deleted nt=A
+-4	6	A	-4A/6	-4/6
+-4	0	4	0.666667
+-4	4	1	0.166667
+-4	10	1	0.166667
+
+
+#Deletion=-3, Subtotal=25, Deleted nt=A
+-3	25	A	-3A/25	-3/25
+-3	0	24	0.960000
+-3	2	1	0.040000
+
+
+#Deletion=-2, Subtotal=195, Deleted nt=C
+-2	195	C	-2C/195	-2/195
+-2	0	195	1.000000
+
+
+#Deletion=-1, Subtotal=308, Deleted nt=A
+-1	308	A	-1A/308	-1/308
+-1	0	308	1.000000
+
+
+#Deletion=0, Subtotal=2287, Deleted nt=A
+0	2287	A	0A/2287	+0/2287
+0	0	1383	0.604722
+0	1	218	0.095321
+0	2	229	0.100131
+0	3	142	0.062090
+0	4	117	0.051159
+0	5	71	0.031045
+0	6	51	0.022300
+0	7	26	0.011369
+0	8	20	0.008745
+0	9	3	0.001312
+0	10	2	0.000875
+0	11	11	0.004810
+0	12	3	0.001312
+0	13	4	0.001749
+0	14	4	0.001749
+0	15	1	0.000437
+0	16	2	0.000875
+
+
+#Deletion=1, Subtotal=0, Deleted nt=A
+1	0	A	1A/0	+1/0
+
+
+#Deletion=2, Subtotal=8, Deleted nt=C
+2	8	C	2C/8	+2/8
+2	0	7	0.875000
+2	2	1	0.125000
+
+
+#Deletion=3, Subtotal=5, Deleted nt=A
+3	5	A	3A/5	+3/5
+3	0	4	0.800000
+3	1	1	0.200000
+
+
+#Deletion=4, Subtotal=5, Deleted nt=C
+4	5	C	4C/5	+4/5
+4	0	5	1.000000
+
+
+#22S  Total=2850

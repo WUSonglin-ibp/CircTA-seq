@@ -1,0 +1,43 @@
+# Instructions for analyzing CircTA-seq data
+
+What is in the package file
+====
+batch_all.sh: shell script, need editing
+analysis_circtaseq.py: python script for analyze yeast pre-rRNA. 
+  Editing is not needed unless you want to change default setting or analyze other RNAs. 
+genome/: reference sequence (35Sext) and database
+X19/: sample sequencing data X19_R1.fq.gz, X19_R2_fq.gz (20k). Other processing output files
+K31/ to K39/: only output files for testing gnuplot drawing
+fig/: 2 script for gnuplot drawing and output figure.
+Location of files and directions are important. 
+
+Installation
+====
+#Python modules could be installed in "conda install"
+python 3
+biopython
+numpy
+
+#Other programs could be installed for example via "sudo apt install cutadapt" in Ubuntu
+cutadapt
+seqtk
+ncbi-blast+
+
+Usage
+====
+1. Sequencing files should be named x_R1.fq.gz, x_R2_fq.gz and be put in directory "x"
+2. edit directory and steps in batch_all.sh
+3. run the script 
+
+sh batch_all.sh
+
+Draw figure in gnuplot
+====
+The processing output files in individual directory from the above analysis 
+are used for drawing figure in gnuplot.
+1. open gnuplot 5.2 patchlevel 7 
+2. change to /fig directory
+3. edit fig_landscape_all.plt and fig_landscape_all.plt
+4. load 'fig_landscape_all.plt'
+5. load 'fig_newpolya_all.plt'
+

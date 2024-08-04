@@ -1,0 +1,106 @@
+# 27SA3 
+#Deletion=-4, Subtotal=5, Deleted nt=T
+-4	5	T	-4T/5	-4/5
+-4	0	1	0.200000
+-4	10	4	0.800000
+
+
+#Deletion=-3, Subtotal=0, Deleted nt=T
+-3	0	T	-3T/0	-3/0
+
+
+#Deletion=-2, Subtotal=4, Deleted nt=T
+-2	4	T	-2T/4	-2/4
+-2	0	4	1.000000
+
+
+#Deletion=-1, Subtotal=197, Deleted nt=G
+-1	197	G	-1G/197	-1/197
+-1	0	197	1.000000
+
+
+#Deletion=0, Subtotal=2784, Deleted nt=T
+0	2784	T	0T/2784	+0/2784
+0	0	2736	0.982759
+0	2	1	0.000359
+0	3	3	0.001078
+0	4	7	0.002514
+0	5	8	0.002874
+0	6	17	0.006106
+0	7	3	0.001078
+0	8	2	0.000718
+0	10	4	0.001437
+0	13	1	0.000359
+0	20	1	0.000359
+0	28	1	0.000359
+
+
+#Deletion=1, Subtotal=18, Deleted nt=T
+1	18	T	1T/18	+1/18
+1	0	18	1.000000
+
+
+#Deletion=2, Subtotal=5, Deleted nt=T
+2	5	T	2T/5	+2/5
+2	0	4	0.800000
+2	4	1	0.200000
+
+
+#Deletion=3, Subtotal=18, Deleted nt=T
+3	18	T	3T/18	+3/18
+3	0	18	1.000000
+
+
+#Deletion=4, Subtotal=7, Deleted nt=T
+4	7	T	4T/7	+4/7
+4	0	7	1.000000
+
+
+#Deletion=5, Subtotal=1, Deleted nt=T
+5	1	T	5T/1	+5/1
+5	0	1	1.000000
+
+
+#Deletion=6, Subtotal=1, Deleted nt=A
+6	1	A	6A/1	+6/1
+6	34	1	1.000000
+
+
+#Deletion=7, Subtotal=0, Deleted nt=T
+7	0	T	7T/0	+7/0
+
+
+#Deletion=8, Subtotal=0, Deleted nt=T
+8	0	T	8T/0	+8/0
+
+
+#Deletion=9, Subtotal=12, Deleted nt=T
+9	12	T	9T/12	+9/12
+9	0	6	0.500000
+9	3	5	0.416667
+9	8	1	0.083333
+
+
+#Deletion=10, Subtotal=13, Deleted nt=C
+10	13	C	10C/13	+10/13
+10	0	13	1.000000
+
+
+#Deletion=11, Subtotal=3, Deleted nt=T
+11	3	T	11T/3	+11/3
+11	0	3	1.000000
+
+
+#Deletion=12, Subtotal=6, Deleted nt=T
+12	6	T	12T/6	+12/6
+12	0	4	0.666667
+12	3	1	0.166667
+12	5	1	0.166667
+
+
+#Deletion=13, Subtotal=8, Deleted nt=T
+13	8	T	13T/8	+13/8
+13	0	8	1.000000
+
+
+#27SA3  Total=3082
