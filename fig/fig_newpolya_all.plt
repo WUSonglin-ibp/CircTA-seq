@@ -1,18 +1,21 @@
 # Gnuplot Template for multiplot 
-# 5.2 patchlevel 7
 # polyA profile at invididual position, based on "_histend3_C20.stat"
 unset multiplot
 reset
 set term wxt font "arial, 5"
 set term pdfcairo color font "Arial, 5" size 20cm,20cm solid linewidth 0.5
 
-# 8 directories: 35S[1], 32-33S [2], 23S[3], 20-22S[4],	18S[5],	25S[6], 5.8S-7S[7], 27S[8]
-# array S[14]: offset for starting position for each RNA. Need manually adjusted for each file to properly align the 0 position.
-# If offset goes to negative, artifical empty blocks need to be added in "x_histend3_C20.stat"
+# Specify data directory and parameters in array DIR
+# 8 directories: 35S/f1b4 [1], 32-33S/f2b4 [2], 23S/f1b2[3], 20-22S/f2b2[4], 18S/f2b1[5], 25S/f4b4[6], 5.8S-7S/f3b3[7], 27S/f3b4[8], sample name[9], figure number[10]
+# array S[14]: index offset for starting position for 14 RNA species. 
+# set manually for each file to align the 0 position.
+# If offset goes to negative, empty blocks need to be added in the beginning of  "x_histend3_C20.stat"
 # array S[14]: 23S[1], 22S[2], 21S[3], 20S[4], 35S[5], 33S[6], 32S[7], 27SA2[8], 27SA3[9], 27SB[10], 25S[11], 7S[12], 58S[13], 18S[14]
 array DIR[11] =['../K31/', '../K32/', '../K33/', '../K34/', '../K35/', '../K36/', '../K37/', '../K39/', 'rex1 NOP7 rep2', '15'];array S[14] = [0, 0, 0, 129, 12, 5, 7, 3, 1, 5, 7, 33, 4, 1]
 
-
+print "fig_S".DIR[10]."_pA3_".DIR[9]."_b6.pdf"
+set output "fig_S".DIR[10]."_pA3_".DIR[9]."_b6.pdf"
+set multiplot title "Fig S".DIR[10].". ".DIR[9] font "Arial, 12"
 
 #unset key
 set macros
@@ -58,9 +61,6 @@ set style histogram columnstacked
 set boxwidth 0.5 absolute
 set style fill solid 1.0
 
-print "fig_S".DIR[10]."_pA3_".DIR[9]."_b6.pdf"
-set output "fig_S".DIR[10]."_pA3_".DIR[9]."_b6.pdf"
-set multiplot title "Fig S".DIR[10].". ".DIR[9] font "Arial, 12"
 
 # overall size
 row_size = 0.12; col_size = 0.4; 

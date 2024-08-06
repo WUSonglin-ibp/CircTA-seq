@@ -1,20 +1,20 @@
 # Gnuplot Template for multiplot 
-# 5.2 patchlevel 7
 unset multiplot
 reset
 set term wxt font "arial, 5"
 set term pdfcairo color font "Arial, 6" size 20cm,30cm solid linewidth 0.5
 
-# 8 directories: 35S[1], 32-33S [2], 23S[3], 20-22S[4],	18S[5],	25S[6], 5.8S-7S[7], 27S[8]
+# Specify data directory and parameters in array DIR
+# 8 directories: 35S/f1b4 [1], 32-33S/f2b4 [2], 23S/f1b2[3], 20-22S/f2b2[4], 18S/f2b1[5], 25S/f4b4[6], 5.8S-7S/f3b3[7], 27S/f3b4[8], sample name[9], figure number[10]
 array DIR[10] =['../K31/', '../K32/', '../K33/', '../K34/', '../K35/', '../K36/', '../K37/', '../K39/', 'rex1 NOP7 rep2', '15']
+
 
 set output "fig_S".DIR[10]."_landscape_".DIR[9]."_paper_b6.pdf"
 print "fig_S".DIR[10]."_landscape_".DIR[9]."_paper_b6.pdf"
 set multiplot title "Fig S".DIR[10].". ".DIR[9] font 'Arial, 12'
 
 set colorsequence default
-fn(v)=sprintf("%.3f",v)
-# Points < shreshold will not disappear, but appear as ghost points, can be removed in AI
+# Points < threshold will not disappear, but appear as ghost points, can be removed in AI
 cf(v)=(v > 5 ? log10(v) : 1/0)
 
 #unset key
@@ -225,7 +225,6 @@ set bmargin at screen top_margin2 - 1.8*row_size
 set lmargin at screen left_margin + 0*col_size
 set rmargin at screen left_margin2 + 1*col_size
 set label 1 "B" @POS2
-#set label 2 "5'ETS" at graph 0.02, 0.9
 @XTICS; @YTICS
 @XRANG_A1
 @YRANG
@@ -285,7 +284,6 @@ set bmargin at screen top_margin2 - 2.5*row_size
 set lmargin at screen left_margin + 2.3*col_size
 set rmargin at screen left_margin2 + 3.3*col_size
 set label 1 "D" @POS2
-#set label 2 "ITS1" at graph 0.02,0.9
 @XTICS; @YTICS
 @XRANG_ITS1S
 @YRANG
@@ -317,7 +315,6 @@ set bmargin at screen top_margin2 - 3.2*row_size
 set lmargin at screen left_margin + 0*col_size
 set rmargin at screen left_margin2 + 2*col_size
 set label 1 "E" @POS2
-#set label 2 "ITS2" at graph 0.02,0.9
 dat1 = DIR[7]."b6_7S_3EXT.dat"; dat2 = DIR[7]."b6_58S_3EXT.dat";  @TOT2D; total1 = total
 @XTICS; @YTICS
 @XRANG_ITS2L

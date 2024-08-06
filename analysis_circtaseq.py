@@ -15,8 +15,13 @@
 ##########################
 # CircTA-seq data analysis
 ##########################
+# Citation: 
+# Weidong An, Yunxiao Yan and Keqiong Ye
+# High resolution landscape of ribosomal RNA processing and surveillance. 
+# Nucleic Acids Research, 2024,  https://doi.org/10.1093/nar/gkae606
+##########################
 # Basic steps:
-# Remove adaptor. 
+# Remove adaptor 
 # Align reads with blastn. Normal reads should be mapped to two different sites on 35S
 # Extract coordinates of 5' and 3' end of RNA fragment
 # Convert 5' and 3' end coordinate to closest processing sites (array: site_35S_5end, site_35S_3end, =>sites)
@@ -29,10 +34,10 @@
 #  seqtk seq -A ${x}_trimq_1.fq > ${x}_trimq_1.fasta
 #  seqtk seq -A ${x}_trimq_2.fq > ${x}_trimq_2.fasta
 ##########################
-# making database for alignment. in ../genome
+# making database for alignment in ../genome
 # makeblastdb -in 35Sext -dbtype nucl -parse_seqids
 ##########################
-# Alignment by blastn, input trimed fasta files, output table (fmt 6).
+# Alignment by blastn, input fasta files, output table (fmt 6).
 #  blastn -db ../genome/35Sext -task "blastn-short" -evalue 1e-3 -strand plus -outfmt 6 -query ${x}_trimq_1.fasta -out ${x}_trimq_r1_blast.tab
 #  blastn -db ../genome/35Sext -task "blastn-short" -evalue 1e-3 -strand minus -outfmt 6 -query ${x}_trimq_2.fasta -out ${x}_trimq_r2_blast.tab
 ##########################
@@ -40,7 +45,7 @@
 #
 #  python ../analysis_circtaseq.py -a blasttab -genome35s '../genome/35Sext' -tab1  ${x}_trimq_r1_blast.tab -tab2 ${x}_trimq_r2_blast.tab -r1 ${x}_trimq_1.fq -r2 ${x}_trimq_2.fq -basename b6 
 #
-# tabl.gz fq.gz files can also be used
+# tab.gz fq.gz files can also be used
 # Output files:
 # b6_hist.stat: all statistics 
 # b6_prerrna_3EXT.dat: 3' extension length, read number, fraction
@@ -48,16 +53,20 @@
 # b6_prerrna_PA.dat: polyA length, read number, fraction
 # b6_prerrna_PAB.dat: range of polyA length, read number, fraction
 # b6_all.stat: results for all aligned and normal read pairs, used for subsequent analysis
-# Information in b6_all.stat
+# content in b6_all.stat
 #27SB	0	7	5	RandomSplit	B1-B2	-2	1.00	TCTGATTTGTtttttat||attaaAAACTTTCAA	E00492:356:HTFYMCCXY:8:1114:5518:18573_1	4100	7897
-# (1) pre-rRNA species (2) polyA length 
+# (1) pre-rRNA species 
+# (2) polyA length 
 # (3) 3' end extension (+) or deletion (-) of pre-rRNA (deletion5)
 # (4) 5' end extension or deletion of pre-rRNA (deletion3) 
-# (5) Junction type (6) sites 
-# (7) dist_err: different means: overlapped nt (<0), original pA length (>0), diff_len for Crossread  
-# (8) A fraction in polyA region
-# (9) Junction sequence, 3' end (extension in lower letters)| polyA | 5' end (extension in lower letters)
-# (10) read name. _1: read 1, _2RC: read 2 (11) 5' end in 35Sext. (12) 3' end in 35Sext.
+# (5) Junction type 
+# (6) Sites 
+# (7) dist_err: overlapped nt (<0), original pA length (>0) for single-read, or diff_len for crossread  
+# (8) fraction of adenine in polyA region
+# (9) Junction sequences, 3' end (extension in lower letters)| polyA | 5' end (extension in lower letters)
+# (10) read name. _1: read 1, _2RC: read 2 
+# (11) 5' end in 35Sext. 
+# (12) 3' end in 35Sext.
 
 ##########################
 # Analyze polyA length at individual position
@@ -79,27 +88,22 @@
 # first extract reads containing all such 5' extension, then do the above analysis. 
 # awk 'BEGIN {OFS="\t"} $1=="21S" && $4==0' < b6_all.stat > b6_21S_5ext0.stat
 ##########################
-# Analyze histogram of each species (with distinct 5' and 3' end). for 2D plot
-# Analyze all pre-rRNA species for 5' and 3' coordinates
+# Count pre-rRNA species with same 5' and 3' end coordinates. for 2D plot
 # We need only 100k reads for this kind of analysis. 
 #
 #  head -100000 b6_all.stat > b6_100k_all.stat
 #  python ../analysis_circtaseq.py -a unk -genome35s '../genome/35Sext' -mapfile b6_100k_all.stat -basename b6
 #  sort -k3,3n b6_UNK_coord.dat > b6_UNK_coord.dat.sort
-
-#################
+#
+##########################
 
 from __future__ import division
 from Bio import SeqIO
-import os
-import sys
 import re
 import collections
-import time
 import numpy as np
 import random
 from random import randint
-from Bio.Blast import NCBIXML
 import argparse
 import gzip
 
@@ -115,7 +119,7 @@ subtotalread_cutoff = 20  # output file is labled as '_C20'
 ########################################
 # 
 ########################################
-#crtseqs stores information for blast alignments for read pairs, 4 alignments for R1 and R2
+#crtseqs stores retrieved and derived information for blast alignments. 
 #crtseqs is dict of dict
 #crtseqs = {'seq_id': {'seq_id':'xxx','polyA':2, 'deletion3':0, 'deletion5':1, 'prerRNA':'20S', 'junction':'XXXaaa|NNNNN' ...} ...}
 crtseqs = collections.defaultdict(dict)
@@ -133,6 +137,10 @@ stat_del3 = collections.defaultdict(dict)
 # statistics of deletion5, dict of dict
 stat_del5 = collections.defaultdict(dict)
 
+#################################################
+# Yeast pre-rRNA specific setting, Start
+#################################################
+
 #pre-rRNA species
 prerRNA_list= ["35S", "33S", "32S", "23S", "22S", "21S", "20S", "18S", "27SA2", "27SA3", "27SB", "7S","58S", "26S", "25S","UNK"]
 
@@ -148,9 +156,64 @@ prerrna_dict = {'5ETS-B2':'35S', 'A0-B2':'33S', 'A1-B2':'32S','5ETS-A3':'23S', '
 prerrna_3end = {'35S':'B2', '33S':'B2', '32S':'B2','23S':'A3', '22S':'A3', '21S':'A3', '20S':'A2', '18S':'D', '27SA2':'B2', '27SA3':'B2', '27SB':'B2', '58S':'E', '7S':'C2', '26S':'B2', '25S':'B2'}
 prerrna_5end = {'35S':'5ETS', '33S':'A0', '32S':'A1','23S':'5ETS', '22S':'A0', '21S':'A1', '20S':'A1', '18S':'A1', '27SA2':'A2', '27SA3':'A3', '27SB':'B1', '58S':'B1', '7S':'B1', '26S':'C2', '25S':'C1'}
 
+def set_site35S_5end ():
+  """ mapping coordinates (1-base from blast) to processing site, site_35S_5end is a list. For 5 end mapping """
+  global site_35S_5end
+  site_35S_5end = ['NO']*8102  # 0 is not used
+  for i in range(0, site['A0']-10):        # 35S, 23S, 5ETS fragment
+    site_35S_5end[i] = "5ETS"
+  for i in range(site['A0']-10, site['A1']-10):  # 33S, 22S
+    site_35S_5end[i] = "A0"  
+  for i in range(site['A1']-10, site['A1']+50): # 32S, 21S, 20S, 18S
+    site_35S_5end[i] = "A1"
+  for i in range(site['A1']+50, site['A2']-10): # degradation, span most 18S region
+    site_35S_5end[i] = "D"
+  for i in range(site['A2']-10, site['A3']-10): # 27SA2 and its 5' degradation products
+    site_35S_5end[i] = "A2"
+  for i in range(site['A3']-10, site['A3']+10): # 27SA3
+    site_35S_5end[i] = "A3"
+  for i in range(site['A3']+10, site['B1']+50): # processing products of 27SA3->27SB, 5.8S, 5' degradation
+    site_35S_5end[i] = "B1"
+  for i in range(site['B1']+50, site['C2']-10): # degradation, span most 5.8S
+    site_35S_5end[i] = "E"
+  for i in range(site['C2']-10, site['C1']-20): # 26S
+    site_35S_5end[i] = "C2"
+  for i in range(site['C1']-20, site['C1']+50): # 25S
+    site_35S_5end[i] = "C1"
+  for i in range(site['C1']+50, site['END']+1): # Nothing
+    site_35S_5end[i] = "B2"
+
+def set_site35S_3end ():
+  """ mapping coordinates (1-base from blast) to processing site, site_35S_3end is a list. For 3 end mapping """
+  global site_35S_3end
+  site_35S_3end = ['NO']*8102  # 0 is not used
+  for i in range(0, site['5ETS']+10):        # Nothing
+    site_35S_3end[i] = "5ETS"
+  for i in range(site['5ETS']+10, site['A0']+10):  # 5ETS-A0 fragment
+    site_35S_3end[i] = "A0"  
+  for i in range(site['A0']+10, site['D']-50): # degradation, span 18S, or A0-A1 fragment
+    site_35S_3end[i] = "A1"
+  for i in range(site['D']-50, site['D']+10): # 18S
+    site_35S_3end[i] = "D"
+  for i in range(site['D']+10, site['A2']+10): # 20S
+    site_35S_3end[i] = "A2"
+  for i in range(site['A2']+10, site['A3']+10): # 23S
+    site_35S_3end[i] = "A3"
+  for i in range(site['A3']+10, site['E']-50): # degradtion, span 5.8S
+    site_35S_3end[i] = "B1"
+  for i in range(site['E']-50, site['E']+50): # 5.8S-6S
+    site_35S_3end[i] = "E"
+  for i in range(site['E']+50, site['C2']+10): # 7S, arbitary division from 6S
+    site_35S_3end[i] = "C2"
+  for i in range(site['C2']+10, site['B2']-50): # degradation, span 25S
+    site_35S_3end[i] = "C1"
+  for i in range(site['B2']-50, site['END']+1): # 35S, 33S, 32S, 27S, 25S
+    site_35S_3end[i] = "B2"
+
 #################################################
-#  
+# Yeast pre-rRNA specific setting, End
 #################################################
+
 def fraction_adenine (seq):
   count=0
   if len(seq) == 0:
@@ -160,7 +223,6 @@ def fraction_adenine (seq):
       if x =="A":
         count +=1
     return count/len(seq)
-    #return seq.count('A')/len(seq)
     
 def safe_divide (a,b):
   if b == 0:
@@ -184,7 +246,6 @@ def write_block_histogram(output_handle, hist, bin_edges, total_hit):
     output_handle.write ('%s-%s\t%d\t%f\n' % (bin_edges[i],bin_edges[i+1]-1,hist[i],hist[i]/float(total_hit)))
 
 def write_block_histogram2(output_handle, hist, bin_edges, total_hit, deletion_length):
-  #for deletion_length stat_del
   for i in range(0,len(bin_edges)-1):
     output_handle.write ('%d\t%d\t%d\t%f\t%s-%s\n' % (deletion_length, i, hist[i], hist[i]/float(total_hit), bin_edges[i], bin_edges[i+1]-1))
 
@@ -327,17 +388,15 @@ def read_map (inputfile):
 
 def output_unk():
 # for gnuplot 2D figure
-  """ output 5 and 3 end coordiantes of unk (all species), with at least depth_cutoff reads """
+  """ output 5 and 3 end coordinates of species with at least depth_cutoff reads """
   depth_cutoff = 0
   unkpeak = collections.defaultdict(dict)
   highpeak = collections.defaultdict(dict)
-  #peak = np.zeros((site['END']+1,site['END']+1))
   for seq_id, v in crtseqs.items():
     if True:  
     #if v['prerRNA'] == "UNK":  
       x5=site[v['end5']]-v['deletion3']
       x3=site[v['end3']]+v['deletion5']-1
-      #peak[x5][x3] +=1
       if x5 in unkpeak.keys():
         if x3 in unkpeak[x5].keys():
           unkpeak[x5][x3] +=1
@@ -478,17 +537,12 @@ def polya_composition():
   stat_polya = collections.defaultdict(dict)
   stat_sum = collections.defaultdict(dict)
   out_handle = open('%s_polyacomposition.stat'%(basename), 'w')
-  #stat_all = collections.defaultdict(dict)
-  #for prerRNA in prerRNA_list:
-  #  for polya_length in range(0,200):
-  #    stat_polya[prerRNA][polya_length]['U'] = 0
   count_U,count_G,count_C,count_all=0,0,0,0
   for seqid, v in crtseqs.items():
     if v['polya'] >= 10:
        polyaseq=v['polyaseq'].upper()
        prerRNA=v['prerRNA']
        polya_length=int(v['polya'])
-       #stat_polya[prerRNA][polya_length]['U'] = stat_polya[prerRNA][polya_length].get('U', 0) + polyaseq.count('U')
        stat_polya[polya_length]['U'] = stat_polya[polya_length].get('U', 0) + polyaseq.count('T')
        stat_polya[polya_length]['C'] = stat_polya[polya_length].get('C', 0) + polyaseq.count('C')
        stat_polya[polya_length]['G'] = stat_polya[polya_length].get('G', 0) + polyaseq.count('G')
@@ -499,8 +553,6 @@ def polya_composition():
        count_all +=len(polyaseq)
   out_handle.write ('#U=%d\tG=%d\tC=%d\tTotal=%d\n' % (count_U, count_G, count_C, count_all))
   #print ('U=%f\tG=%f\tC=%f' % (100*count_U/count_all, 100*count_G/count_all, 100*count_C/count_all))
-  #for prerRNA in prerRNA_list:
-  #  stat_all[prerRNA]=stat_polya
   binsize = 20
   for k in range (10,160,binsize):
     stat_sum[k]['U'] = 0
@@ -546,9 +598,6 @@ def read_reads (r1file, r2file):
     crtseqs[k.id]['seq2'] = k.seq.reverse_complement()
     #crtseqs[k.id]['phred2'] = k.letter_annotations["phred_quality"][::-1]
     crtseqs[k.id]['r2hitcount'] = 0
-    #print k.id
-    #print crtseqs[k.id]['seq1']
-    #print crtseqs[k.id]['seq2']
   f2.close()
 
 ## alignment  by blast, 1-base coordinate
@@ -786,6 +835,9 @@ def output_blast ():
         segment_3s = inputseq[polya_end:polya_end + 10]
 
 ## Further adjustment for special cases
+#################################################
+# Yeast pre-rRNA specific setting, Start
+#################################################
       if segment_5e == 'A': # special treatment for  20S, 23S/22S/21S, move A to pA
         segment_5e = ''
         segment_polya = 'A' + segment_polya
@@ -794,6 +846,9 @@ def output_blast ():
         segment_5e = ""
         segment_polya = "AA" + segment_polya
         ext5_len -= 2
+#################################################
+# Yeast pre-rRNA specific setting, End
+#################################################
 #  All adjustments done     
       v['junction'] = segment_5s + segment_5e.lower() + "|" + segment_polya.lower() + "|" + segment_3e.lower() + segment_3s
       v['deletion5'] = ext5_len    # 5' part of read,  3' end of RNA, + extension, - deletion, 0 intact
@@ -893,6 +948,9 @@ def output_blast ():
           segment_3e = ''
           segment_3s = v['seq2'][polya_end:polya_end + 10]
 
+#################################################
+# Yeast pre-rRNA specific setting, Start
+#################################################
         ## Further adjustment for special cases, even for pA = 0, The pA > 0 case shall already be solved.
         if segment_5e == 'A': # special treatment for 20S, 23S/22S/21S, move A to pA
           segment_5e = ''
@@ -904,6 +962,9 @@ def output_blast ():
           if diff_len > 0:
             segment_polya = "AA" + segment_polya
           ext5_len -= 2
+#################################################
+# Yeast pre-rRNA specific setting, End
+#################################################
 
         crosshit_count +=1
         v['junction'] = segment_5s + segment_5e.lower() + "|" + segment_polya.lower() + "|" + segment_3e.lower() + segment_3s
@@ -955,60 +1016,6 @@ def extract_polya_bwa (seq, is_3end=True):
     return seq[0:peak_ind[-1]+1][::-1]
   else:
     return seq[0:peak_ind[-1]+1]
-
-def set_site35S_5end ():
-  """ mapping coordinates (1-base from blast) to processing site, site_35S_5end is a list. For 5 end mapping """
-  global site_35S_5end
-  site_35S_5end = ['NO']*8102  # 0 is not used
-  for i in range(0, site['A0']-10):        # 35S, 23S, 5ETS fragment
-    site_35S_5end[i] = "5ETS"
-  for i in range(site['A0']-10, site['A1']-10):  # 33S, 22S
-    site_35S_5end[i] = "A0"  
-  for i in range(site['A1']-10, site['A1']+50): # 32S, 21S, 20S, 18S
-    site_35S_5end[i] = "A1"
-  for i in range(site['A1']+50, site['A2']-10): # degradation, span most 18S region
-    site_35S_5end[i] = "D"
-  for i in range(site['A2']-10, site['A3']-10): # 27SA2 and its 5' degradation products
-    site_35S_5end[i] = "A2"
-  for i in range(site['A3']-10, site['A3']+10): # 27SA3
-    site_35S_5end[i] = "A3"
-  for i in range(site['A3']+10, site['B1']+50): # processing products of 27SA3->27SB, 5.8S, 5' degradation
-    site_35S_5end[i] = "B1"
-  for i in range(site['B1']+50, site['C2']-10): # degradation, span most 5.8S
-    site_35S_5end[i] = "E"
-  for i in range(site['C2']-10, site['C1']-20): # 26S
-    site_35S_5end[i] = "C2"
-  for i in range(site['C1']-20, site['C1']+50): # 25S
-    site_35S_5end[i] = "C1"
-  for i in range(site['C1']+50, site['END']+1): # Nothing
-    site_35S_5end[i] = "B2"
-
-def set_site35S_3end ():
-  """ mapping coordinates (1-base from blast) to processing site, site_35S_3end is a list. For 3 end mapping """
-  global site_35S_3end
-  site_35S_3end = ['NO']*8102  # 0 is not used
-  for i in range(0, site['5ETS']+10):        # Nothing
-    site_35S_3end[i] = "5ETS"
-  for i in range(site['5ETS']+10, site['A0']+10):  # 5ETS-A0 fragment
-    site_35S_3end[i] = "A0"  
-  for i in range(site['A0']+10, site['D']-50): # degradation, span 18S, or A0-A1 fragment
-    site_35S_3end[i] = "A1"
-  for i in range(site['D']-50, site['D']+10): # 18S
-    site_35S_3end[i] = "D"
-  for i in range(site['D']+10, site['A2']+10): # 20S
-    site_35S_3end[i] = "A2"
-  for i in range(site['A2']+10, site['A3']+10): # 23S
-    site_35S_3end[i] = "A3"
-  for i in range(site['A3']+10, site['E']-50): # degradtion, span 5.8S
-    site_35S_3end[i] = "B1"
-  for i in range(site['E']-50, site['E']+50): # 5.8S-6S
-    site_35S_3end[i] = "E"
-  for i in range(site['E']+50, site['C2']+10): # 7S, arbitary division from 6S
-    site_35S_3end[i] = "C2"
-  for i in range(site['C2']+10, site['B2']-50): # degradation, span 25S
-    site_35S_3end[i] = "C1"
-  for i in range(site['B2']-50, site['END']+1): # 35S, 33S, 32S, 27S, 25S
-    site_35S_3end[i] = "B2"
 
 
 if __name__ == "__main__":
